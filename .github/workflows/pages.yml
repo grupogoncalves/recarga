@@ -1,4 +1,4 @@
-name: Publicar portal FullCharge
+name: Publicar portal FullCharge Oficial
 on:
   push:
     branches: [main]
