@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+ match /databases/{database}/documents {
+   // Somente conta de serviço no Admin SDK grava/lê as transações brutas.
+   match /spott_transactions/{id} { allow read, write: if false; }
+   match /sync_meta/{id} { allow read, write: if false; }
+   // Futuras consultas do cliente devem usar uma coleção separada com
+   // autenticação individual e regras baseadas em request.auth.uid.
+ }
+}
