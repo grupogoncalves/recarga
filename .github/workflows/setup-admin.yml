@@ -1,0 +1,20 @@
+name: Configurar administrador FullCharge
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - name: Criar ou autorizar administrador
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+          FULLCHARGE_ADMIN_EMAIL: ${{ secrets.FULLCHARGE_ADMIN_EMAIL }}
+          FULLCHARGE_ADMIN_PASSWORD: ${{ secrets.FULLCHARGE_ADMIN_PASSWORD }}
+        run: node scripts/setup-admin.mjs
