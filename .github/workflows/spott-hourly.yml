@@ -1,0 +1,31 @@
+name: Atualizar recargas Spott Eco
+on:
+  schedule:
+    - cron: '7 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: spott-hourly
+  cancel-in-progress: false
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - name: Importar transações no Firestore
+        env:
+          SPOTT_USER: ${{ secrets.SPOTT_USER }}
+          SPOTT_PASSWORD: ${{ secrets.SPOTT_PASSWORD }}
+          SPOTT_USER_SELECTOR: ${{ secrets.SPOTT_USER_SELECTOR }}
+          SPOTT_PASS_SELECTOR: ${{ secrets.SPOTT_PASS_SELECTOR }}
+          SPOTT_LOGIN_BUTTON_SELECTOR: ${{ secrets.SPOTT_LOGIN_BUTTON_SELECTOR }}
+          SPOTT_EXPORT_SELECTOR: ${{ secrets.SPOTT_EXPORT_SELECTOR }}
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+        run: npm run sync
